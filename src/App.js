@@ -10,23 +10,23 @@ import News from "./components/News/News";
 const App = () => {
   const [news, setNews] = useState([]);
 
-  const [isLoggin, setIsLoggin] = useState(false);
+  const [isLoggin, setIsLoggin] = useState("false");
 
   useEffect(() => {
     fetch("https://jsonplaceholder.typicode.com/posts")
       .then((response) => response.json())
       .then((data) => setNews(data));
-    setIsLoggin(localStorage.getItem("isLoggin") == "true" ? true : false);
+    setIsLoggin(localStorage.getItem("isLoggin"));
   }, []);
 
   const auth = () => {
-    setIsLoggin(true);
-    localStorage.setItem("isLoggin", 'true');
+    setIsLoggin("true");
+    localStorage.setItem("isLoggin", "true");
   };
 
   const unAuth = () => {
-    setIsLoggin(false);
-    localStorage.setItem("isLoggin", 'false');
+    setIsLoggin("false");
+    localStorage.setItem("isLoggin", "false");
   };
 
   return (
@@ -37,7 +37,7 @@ const App = () => {
           path="/"
           exact
           render={() =>
-            isLoggin ? (
+            isLoggin == "true" ? (
               <Redirect to="/profile" />
             ) : (
               <LoginForm auth={auth} unAuth={unAuth} />
@@ -47,7 +47,11 @@ const App = () => {
         <Route
           path="/profile"
           render={() =>
-            isLoggin ? <Profile unAuth={unAuth} /> : <Redirect to="/" />
+            isLoggin == "true" ? (
+              <Profile unAuth={unAuth} />
+            ) : (
+              <Redirect to="/" />
+            )
           }
         />
         <Route path="/news" render={() => <News news={news} />} />
